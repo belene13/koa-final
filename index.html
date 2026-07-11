@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>koa — Sleep Tracker</title>
+
+<!-- Google Fonts: Rubik (títulos) + Baloo 2 (cuerpo) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Baloo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ======================================================= -->
+<!-- CONTENEDOR DE TELÉFONO (marco visual solo para escritorio) -->
+<!-- ======================================================= -->
+<div class="device-frame">
+  <div class="app" id="app">
+
+    <!-- =========================================================
+         PANTALLA 1 · SPLASH / INICIO DE SESIÓN
+    ========================================================== -->
+    <section class="screen screen--splash active" data-screen="splash">
+
+
+      <div class="splash__center">
+    
+        <button class="btn btn--pill btn--teal" data-nav="home">INICIAR</button>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PANTALLA 2 · RECORDATORIO DE SUEÑO (cuenta regresiva)
+         Ya NO es la pantalla principal — ver PANTALLA 4 (home)
+    ========================================================== -->
+    <section class="screen screen--purple" data-screen="sleepReminder">
+      <header class="topbar">
+        <button class="icon-btn" data-back data-fallback="home" aria-label="Volver">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </header>
+
+      <h2 class="title-xl" id="clockText">Son las 22:35</h2>
+      <p class="subtitle" id="countdownText">Te quedan 30 minutos antes<br />de tu hora de dormir.</p>
+      <p class="small-text">Es momento de dejar el celular<br />para que tengas una mejor calidad<br />de sueño</p>
+
+      <div class="moon-wrap">
+        <div class="moon-glow"></div>
+        <div class="moon">
+          <span class="moon-dot moon-dot--1"></span>
+          <span class="moon-dot moon-dot--2"></span>
+          <span class="moon-dot moon-dot--3"></span>
+        </div>
+        <div class="moon-cloud moon-cloud--l"></div>
+        <div class="moon-cloud moon-cloud--r"></div>
+        <span class="sparkle sparkle--small s1">✦</span>
+        <span class="sparkle sparkle--small s2">✦</span>
+        <span class="sparkle sparkle--small s3">✦</span>
+        <div class="pet-peek"></div>
+      </div>
+
+      <button class="slide-hint" id="slideActivate" aria-label="Deslizar para activar modo sueño">
+        <svg class="chevron" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Desliza para activar el modo sueño</span>
+      </button>
+
+      <button class="btn btn--pill btn--rose-outline" id="addThirtyBtn">Añadir 30m más</button>
+
+      <nav class="navbar" data-navbar="sleepReminder"></nav>
+    </section>
+
+    <!-- =========================================================
+         PANTALLA 3 · CONFIGURAR OBJETIVO DE SUEÑO
+    ========================================================== -->
+    <section class="screen screen--config" data-screen="config">
+      <header class="topbar">
+        <button class="icon-btn" data-back data-fallback="home" aria-label="Volver">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </header>
+
+      <h2 class="title-lg config-title">Configura tu<br />objetivo de sueño</h2>
+
+      <div class="config-card">
+        <label class="config-row">
+          <span>Hora de dormir</span>
+          <input type="time" id="bedtimeInput" value="00:00" />
+        </label>
+        <div class="config-divider"></div>
+        <label class="config-row">
+          <span>Hora de despertar</span>
+          <input type="time" id="wakeInput" value="06:00" />
+        </label>
+      </div>
+
+      <button class="btn btn--pill btn--teal btn--wide" id="calcularBtn">CALCULAR</button>
+
+      <div class="config-illustration">
+        <div class="koala koala--config"></div>
+      </div>
+    <nav class="navbar" data-navbar="sleepReminder"></nav>
+    </section>
+
+    <!-- =========================================================
+         MODAL · ADVERTENCIA DE DESCANSO INSUFICIENTE
+    ========================================================== -->
+    <div class="modal-overlay" id="warningModal">
+      <div class="modal-card">
+        <h3 class="modal-title">Calidad de descanso<br />insuficiente</h3>
+        <p class="modal-text">Dormirás <strong id="warningHours">6</strong> horas, por
+        debajo de la cantidad recomendada</p>
+        <div class="modal-actions">
+          <button class="btn btn--text" id="omitirBtn">OMITIR</button>
+          <button class="btn btn--text btn--text-strong" id="cambiarBtn">CAMBIAR</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================
+         PANTALLA 4 · HOME (pantalla principal — "¡Buenas noches!")
+         Esta es ahora la pantalla de inicio real de la app.
+    ========================================================== -->
+    <section class="screen screen--home" data-screen="home">
+    
+
+      <h2 class="title-lg">¡Buenas noches!</h2>
+      <p class="subtitle-sm">Tu objetivo 8h </p>
+    
+
+      <div class="streak-card">
+        <div class="streak-card__top">
+          <span>Racha actual</span>
+          <span class="streak-value"><span id="streakValue">2</span> Días <span class="flame">🔥</span></span>
+        </div>
+        <div class="streak-card__days" id="streakDays">
+          <!-- generado por JS -->
+        </div>
+      </div>
+
+      <button class="link-btn" id="demoWakeBtn">Simular que desperté →</button>
+
+      <nav class="navbar" data-navbar="home"></nav>
+    </section>
+
+    <!-- =========================================================
+         PANTALLA 5 · RECOMPENSA ("¡Meta cumplida!")
+    ========================================================== -->
+    <section class="screen screen--reward" data-screen="reward">
+      <header class="topbar">
+        <button class="icon-btn" data-back data-fallback="home" aria-label="Volver">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </header>
+
+      <div class="reward-deco deco--clouds-tl small"></div>
+      <div class="reward-deco deco--clouds-tr small"></div>
+
+      <h2 class="title-lg reward-title">¡Meta cumplida!</h2>
+      <p class="reward-sub">Dormiste <strong id="rewardHours">9</strong> horas</p>
+      <p class="reward-desc">Tu mascota está feliz<br />y ganaste recompensas</p>
+
+      <div class="reward-koala-wrap">
+        <div class="deco deco--clouds-l"></div>
+        <div class="koala koala--peek"></div>
+      </div>
+
+      <div class="reward-stats">
+        <div class="reward-stat">
+          <div class="reward-stat__icon">$</div>
+          <span class="reward-stat__value">+100</span>
+          <span class="reward-stat__label">Monedas</span>
+        </div>
+        <div class="reward-stat">
+          <div class="reward-stat__icon">⚡</div>
+          <span class="reward-stat__value">+2</span>
+          <span class="reward-stat__label">Energía</span>
+        </div>
+        <div class="reward-stat">
+          <div class="reward-stat__icon">★</div>
+          <span class="reward-stat__value">+33</span>
+          <span class="reward-stat__label">XP</span>
+        </div>
+      </div>
+
+      <nav class="navbar" data-navbar="reward"></nav>
+    </section>
+
+    <!-- =========================================================
+         PANTALLA 6 · HISTORIAL / ESTADÍSTICAS
+    ========================================================== -->
+    <section class="screen screen--history" data-screen="history">
+      <header class="topbar">
+        <button class="icon-btn" data-back data-fallback="home" aria-label="Volver">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h2 class="topbar-title">Historial</h2>
+      </header>
+
+      
+ 
+      <h3 class="chart-title">ESTADÍSTICAS</h3>
+      <div class="chart-wrap">
+        <canvas id="statsChart" width="640" height="380"></canvas>
+      </div>
+
+      <nav class="navbar" data-navbar="history"></nav>
+    </section>
+
+    <!-- =========================================================
+         PANTALLA 7 · PERFIL
+    ========================================================== -->
+    <section class="screen screen--profile" data-screen="profile">
+      <header class="topbar">
+        <button class="icon-btn" data-back data-fallback="home" aria-label="Volver">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </header>
+
+      <div class="profile-head">
+        <div class="avatar-circle">
+          <div class="koala koala--avatar"></div>
+        </div>
+        <div>
+          <span class="profile-label">Usuario</span>
+          <h2 class="profile-name">Haland_</h2>
+        </div>
+      </div>
+
+      <div class="profile-streak-card">
+        <div>
+          <span class="profile-streak-card__label">RACHA:</span>
+          <span class="profile-streak-card__value"><span id="profileStreakValue">2</span> Días <span class="flame">🔥</span></span>
+        </div>
+        <div class="bunny bunny--profile"></div>
+      </div>
+
+      <h3 class="section-title section-title--dark">Insignias</h3>
+      <div class="badge-grid">
+        <button class="badge badge--unlocked badge--rose" data-nav="reward">
+          <div class="badge__icon koala koala--badge"></div>
+          <span>Horas completadas</span>
+        </button>
+
+
+        
+        <button class="badge badge--unlocked badge--teal" data-nav="pets">
+          <div class="badge__icon koala koala--badge"></div>
+          <span>Mejoras mascota</span>
+        </button>
+        <button class="badge badge--locked" data-nav="soon">
+          <svg class="badge__icon" viewBox="0 0 24 24"><path d="M12 2l2.4 5.1L20 8l-4 4 1 5.5L12 15l-5 2.5 1-5.5-4-4 5.6-.9L12 2z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="14" r="1" fill="currentColor"/><circle cx="18" cy="14" r="1" fill="currentColor"/></svg>
+          <span>Bloqueada</span>
+        </button>
+        <button class="badge badge--locked" data-nav="soon">
+          <svg class="badge__icon" viewBox="0 0 24 24"><path d="M12 2l2.4 5.1L20 8l-4 4 1 5.5L12 15l-5 2.5 1-5.5-4-4 5.6-.9L12 2z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="14" r="1" fill="currentColor"/><circle cx="18" cy="14" r="1" fill="currentColor"/></svg>
+          <span>Bloqueada</span>
+        </button>
+        <button class="badge badge--locked" data-nav="soon">
+          <svg class="badge__icon" viewBox="0 0 24 24"><path d="M12 2l2.4 5.1L20 8l-4 4 1 5.5L12 15l-5 2.5 1-5.5-4-4 5.6-.9L12 2z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="14" r="1" fill="currentColor"/><circle cx="18" cy="14" r="1" fill="currentColor"/></svg>
+          <span>Bloqueada</span>
+        </button>
+        <button class="badge badge--locked" data-nav="soon">
+          <svg class="badge__icon" viewBox="0 0 24 24"><path d="M12 2l2.4 5.1L20 8l-4 4 1 5.5L12 15l-5 2.5 1-5.5-4-4 5.6-.9L12 2z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="14" r="1" fill="currentColor"/><circle cx="18" cy="14" r="1" fill="currentColor"/></svg>
+          <span>Bloqueada</span>
+        </button>
+        <button class="badge badge--locked" data-nav="soon">
+          <svg class="badge__icon" viewBox="0 0 24 24"><path d="M12 2l2.4 5.1L20 8l-4 4 1 5.5L12 15l-5 2.5 1-5.5-4-4 5.6-.9L12 2z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="14" r="1" fill="currentColor"/><circle cx="18" cy="14" r="1" fill="currentColor"/></svg>
+          <span>Bloqueada</span>
+        </button>
+        <button class="badge badge--locked" data-nav="soon">
+          <svg class="badge__icon" viewBox="0 0 24 24"><path d="M12 2l2.4 5.1L20 8l-4 4 1 5.5L12 15l-5 2.5 1-5.5-4-4 5.6-.9L12 2z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="14" r="1" fill="currentColor"/><circle cx="18" cy="14" r="1" fill="currentColor"/></svg>
+          <span>Bloqueada</span>
+        </button>
+      </div>
+
+      <nav class="navbar" data-navbar="profile"></nav>
+    </section>
+
+    <!-- =========================================================
+         PANTALLA 8 · MASCOTAS
+    ========================================================== -->
+    <section class="screen screen--pets" data-screen="pets">
+      <header class="topbar">
+        <button class="icon-btn" data-back data-fallback="profile" aria-label="Volver">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </header>
+
+      <div class="pet-info-card">
+        <div>
+          <span>Nombre: <strong id="petName">Milaneza</strong></span>
+          <span>Edad: <strong id="petAge">1 mes</strong></span>
+        </div>
+        <div class="bunny bunny--info">
+          <img src="final/fondo-10.png" alt="">
+        </div>
+      </div>
+
+      <h3 class="section-title section-title--white">Mascotas</h3>
+
+      <div class="pets-grid" id="petsGrid">
+        <button class="pet-avatar" data-pet="Milaneza" data-age="1 mes"><div class="bunny bunny--avatar"></div></button>
+        <button class="pet-avatar" data-pet="Panda" data-age="2 meses"><div class="panda panda--avatar"></div></button>
+        <button class="pet-avatar" data-pet="Michi" data-age="3 meses"><div class="cat cat--avatar"></div></button>
+        <button class="pet-avatar" data-pet="Zorrito" data-age="1 mes"><div class="fox fox--avatar"></div></button>
+        <button class="pet-avatar" data-pet="Nutria" data-age="4 meses"><div class="otter otter--avatar"></div></button>
+        <button class="pet-avatar" data-pet="Mapache" data-age="2 meses"><div class="raccoon raccoon--avatar"></div></button>
+      </div>
+
+      <nav class="navbar" data-navbar="pets"></nav>
+    </section>
+
+    <!-- =========================================================
+         PANTALLA 9 · PÁGINA EN CONSTRUCCIÓN
+    ========================================================== -->
+    <section class="screen screen--purple screen--soon" data-screen="soon">
+      <header class="topbar">
+        <button class="icon-btn" data-back data-fallback="profile" aria-label="Volver">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </header>
+
+      <span class="sparkle sparkle--1">✦</span>
+      <span class="sparkle sparkle--2">✦</span>
+      <span class="sparkle sparkle--3">✦</span>
+      <span class="sparkle sparkle--4">✦</span>
+      <span class="sparkle sparkle--5">✦</span>
+
+
+      <div class="soon-center">
+        <div class="duo-koala duo-koala--soon">
+          <div class="koala koala--big"></div>
+          <div class="koala koala--small"></div>
+        </div>
+        <h2 class="soon-title">Página en<br /><span class="soon-title__ghost">CONSTRUCCIÓN</span></h2>
+        <p class="soon-sub">Próximamente tendremos<br />más actualizaciones :)</p>
+      </div>
+    </section>
+
+
+
+
+
+
+
+
+
+  </div><!-- /.app -->
+</div><!-- /.device-frame -->
+
+<script src="script.js"></script>
+</body>
+</html>
