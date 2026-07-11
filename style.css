@@ -1,0 +1,1028 @@
+/* =========================================================
+   KOA — Sleep Tracker
+   Hoja de estilos general
+   Organización:
+     1. Variables / Reset
+     2. Marco de dispositivo (solo escritorio)
+     3. Estructura de pantallas
+     4. Tipografía general
+     5. Barra superior / botones de icono
+     6. Barra inferior de navegación
+     7. Botones reutilizables
+     8. Pantalla Splash
+     9. Pantalla Home
+    10. Ilustraciones (placeholders con CSS)
+    11. Pantalla Config
+    12. Modal de advertencia
+    13. Pantalla Modo sueño activado
+    14. Pantalla Recompensa
+    15. Pantalla Historial
+    16. Pantalla Perfil
+    17. Pantalla Mascotas
+    18. Pantalla En construcción
+    19. Animaciones
+========================================================= */
+
+
+/* ---------- 1. VARIABLES / RESET ---------- */
+:root{
+  --purple:        #8B3D6B;
+  --purple-deep:    #7A3560;
+  --purple-veil:    rgba(255,255,255,.10);
+  --purple-veil-2:  rgba(255,255,255,.06);
+  --rose:           #A8556E;
+  --rose-light:     #B9647D;
+  --rose-soft:      #C97F94;
+  --teal:           #3E9C8C;
+  --teal-dark:      #2F8677;
+  --teal-light:     #5AB39F;
+  --green:          #6FBE55;
+  --green-dark:     #55A83F;
+  --green-text:     #4CAF7D;
+  --nav-black:      #171717;
+  --white:          #FFFFFF;
+  --cloud-shadow:   rgba(122,53,96,.55);
+
+  --font-title: 'Rubik', sans-serif;
+  --font-body:  'Baloo 2', sans-serif;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{
+  margin:0;
+  padding:0;
+  font-family:var(--font-body);
+  background:#3d1b31;
+  -webkit-tap-highlight-color:transparent;
+}
+button{ font-family:inherit; cursor:pointer; }
+input{ font-family:inherit; }
+h1,h2,h3,p,span{ margin:0; }
+ul{ margin:0; padding:0; list-style:none; }
+
+/* ---------- 2. MARCO DE DISPOSITIVO (visual, solo escritorio) ---------- */
+/* El app en sí es responsive solo para 360–430px; en pantallas grandes
+   se centra dentro de un "marco" para facilitar la vista de escritorio. */
+.device-frame{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px 0;
+}
+.app{
+  position:relative;
+  width:100%;
+  max-width:430px;
+  min-width:360px;
+  min-height:844px;
+  overflow:hidden;
+  background:var(--purple);
+  box-shadow:0 30px 60px rgba(0,0,0,.45);
+  border-radius:0;
+}
+@media (min-width:520px){
+  .app{
+    border-radius:38px;
+    border:8px solid #111;
+  }
+}
+
+/* ---------- 3. ESTRUCTURA DE PANTALLAS ---------- */
+.screen{
+  display:none;
+  position:relative;
+  width:100%;
+  min-height:844px;
+  padding:56px 26px 130px;
+  text-align:center;
+  overflow:hidden;
+}
+.screen.active{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  animation:fadeIn .28s ease;
+}
+
+.screen--splash{ background-image: url(final/inicio-09.png); 
+  justify-content:center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; }
+
+.screen--reward{ background-image: url(final/recom-20.png); 
+    justify-content:center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; }
+
+.screen--profile{ background-image: url(final/per1-15.png); 
+    justify-content:center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; }
+
+
+
+.screen--pets{ background-image: url(final/p3-03.png); 
+    justify-content:center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; }
+
+.screen--home {background-image: url(final/p1-01.png); 
+  justify-content:center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; }
+
+  .screen--history{background-image: url(final/fondo-02.png); 
+  justify-content:center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; }
+
+  .screen--soon{background-image: url(final/cons-21.png); 
+  justify-content:center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; }
+
+
+  .screen--config{background-image: url(final/fondo-17.png); 
+  justify-content:center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; }
+
+/* ---------- 4. TIPOGRAFÍA GENERAL ---------- */
+.title-xl{
+  font-family:var(--font-title);
+  font-weight:700;
+  font-size:34px;
+  line-height:1.15;
+  margin-bottom:18px;
+}
+.title-lg{
+  font-family:var(--font-title);
+  font-weight:700;
+  font-size:28px;
+  line-height:1.2;
+  margin-bottom:0px;
+  margin-top: -10px;
+  color: #FFFFFF;
+}
+.subtitle{
+  font-family:var(--font-body);
+  font-weight:500;
+  font-size:19px;
+  line-height:1.35;
+  margin-bottom:14px;
+}
+
+.subtitle-sm{
+  font-size:15px;
+  opacity:.9;
+  margin-top:0px;
+  margin-bottom: 100px;
+  color: #FFFFFF;
+}
+.small-text{
+  font-size:13.5px;
+  line-height:1.5;
+  opacity:.85;
+  margin-bottom:26px;
+}
+
+/* ---------- 5. BARRA SUPERIOR / BOTONES DE ICONO ---------- */
+.topbar{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:22px;
+}
+.topbar-title{
+  font-family:var(--font-title);
+  font-weight:700;
+  font-size:26px;
+  color: #FFFFFF;
+  align-items: center;
+}
+.icon-btn{
+  width:44px;
+  height:44px;
+  flex:0 0 auto;
+  border-radius:50%;
+  border:none;
+  background:var(--rose-light);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--white);
+  box-shadow:0 4px 10px rgba(0,0,0,.18);
+  transition:transform .15s ease, filter .15s ease;
+}
+.icon-btn:active{ transform:scale(.9); filter:brightness(.92); }
+.icon-btn svg{ width:20px; height:20px; }
+
+/* ---------- 6. BARRA INFERIOR DE NAVEGACIÓN ---------- */
+.navbar{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:96px;
+  background:var(--nav-black);
+  border-top-left-radius:34px;
+  border-top-right-radius:34px;
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  padding:0 18px 14px;
+}
+.nav-item{
+  background:none;
+  border:none;
+  color:rgba(255,255,255,.6);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  padding:6px;
+}
+.nav-item svg{ width:24px; height:24px; }
+.nav-item.is-active{ color:var(--white); }
+.nav-item--fab{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:var(--rose);
+  color:var(--white);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:-34px;
+  border:6px solid var(--nav-black);
+  box-shadow:0 6px 14px rgba(0,0,0,.35);
+  transition:transform .15s ease;
+}
+.nav-item--fab:active{ transform:scale(.92); }
+.nav-item--fab svg{ width:26px; height:26px; }
+.nav-item--dot::after{
+  content:'';
+  width:5px; height:5px;
+  border-radius:50%;
+  background:var(--white);
+  margin-top:2px;
+}
+
+/* ---------- 7. BOTONES REUTILIZABLES ---------- */
+.btn{
+  border:none;
+  font-family:var(--font-body);
+  font-weight:600;
+  letter-spacing:.02em;
+}
+.btn--pill{
+  padding:10px 60px;
+  border: 3px solid #FFFFFF;
+  border-radius:100px;
+  font-size:16px;
+  position: absolute;
+  top: 450px;
+  border-radius:10px;
+}
+.btn--wide{ width:50%; }
+.btn--teal{
+  background:var(--teal);
+  color:var(--white);
+  box-shadow:0 8px 18px rgba(46,120,105,.35);
+}
+.btn--teal:active{ background:var(--teal-dark); }
+.btn--rose-outline{
+  background:var(--rose-soft);
+  color:var(--white);
+  opacity:.95;
+}
+.btn--rose-outline:active{ background:var(--rose); }
+.btn--text{
+  background:none;
+  border:none;
+  color:var(--white);
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:.04em;
+  padding:10px 18px;
+  opacity:.8;
+}
+.btn--text-strong{ opacity:1; }
+.link-btn{
+  background:none;
+  border:none;
+  color:rgba(255,255,255,.75);
+  font-size:13px;
+  text-decoration:underline;
+  margin-top:14px;
+}
+
+/* ---------- 8. PANTALLA SPLASH ---------- */
+.splash__center{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:26px;
+  z-index:2;
+}
+.logo{
+  font-family:var(--font-title);
+  font-weight:300;
+  font-size:64px;
+  letter-spacing:.01em;
+  color:var(--white);
+}
+
+/* decoraciones de nubes / destellos reutilizables */
+.deco{
+  position:absolute;
+  border-radius:50% 50% 0 0;
+  background:var(--cloud-shadow);
+  opacity:.5;
+}
+.deco--clouds-tl{ width:210px; height:130px; top:-50px; left:-60px; }
+.deco--clouds-br{ width:230px; height:150px; bottom:-60px; right:-70px; }
+.deco--clouds-tr{ width:190px; height:120px; top:-40px; right:-50px; }
+.deco--clouds-bl{ width:200px; height:130px; bottom:-50px; left:-60px; }
+.deco--clouds-l{ width:150px; height:90px; top:10px; left:-50px; opacity:.35; }
+.deco.small{ transform:scale(.7); opacity:.35; }
+
+.sparkle{
+  position:absolute;
+  color:rgba(255,255,255,.7);
+  font-size:16px;
+}
+.sparkle--1{ top:14%; left:14%; }
+.sparkle--2{ top:16%; right:12%; font-size:22px; }
+.sparkle--3{ top:28%; left:26%; font-size:12px; }
+.sparkle--4{ top:38%; right:20%; }
+.sparkle--5{ bottom:22%; left:10%; font-size:12px; }
+.sparkle--6{ bottom:16%; right:12%; font-size:20px; }
+
+/* ---------- 9. PANTALLA HOME ---------- */
+.moon-wrap{
+  position:relative;
+  width:290px;
+  height:290px;
+  margin:18px auto 26px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.moon-glow{
+  position:absolute;
+  inset:-24px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,.16), transparent 70%);
+}
+.moon{
+  position:relative;
+  width:250px;
+  height:250px;
+  border-radius:50%;
+  background:var(--white);
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
+  overflow:hidden;
+}
+.moon-dot{
+  position:absolute;
+  border-radius:50%;
+  background:var(--rose-soft);
+  opacity:.55;
+}
+.moon-dot--1{ width:46px; height:46px; top:36px; right:44px; }
+.moon-dot--2{ width:58px; height:58px; bottom:60px; left:30px; }
+.moon-dot--3{ width:16px; height:16px; bottom:44px; left:98px; }
+.moon-cloud{
+  position:absolute;
+  width:120px; height:60px;
+  background:var(--purple);
+  border-radius:60px 60px 0 0;
+  opacity:.85;
+}
+.moon-cloud--l{ bottom:-6px; left:-40px; }
+.moon-cloud--r{ bottom:-2px; right:-40px; }
+.sparkle--small{ font-size:12px; color:var(--white); opacity:.8; }
+.s1{ top:30%; left:-2%; }
+.s2{ top:56%; right:-4%; }
+.s3{ bottom:6%; right:14%; }
+.pet-peek{
+  position:absolute;
+  bottom:-6px;
+  left:50%;
+  transform:translateX(-50%);
+  width:110px;
+  height:60px;
+  background:var(--purple-deep);
+  border-radius:50% 50% 0 0;
+}
+.pet-peek::before,.pet-peek::after{
+  content:'';
+  position:absolute;
+  top:-16px;
+  width:34px; height:34px;
+  border-radius:50%;
+  background:var(--purple-deep);
+}
+.pet-peek::before{ left:6px; }
+.pet-peek::after{ right:6px; }
+
+.slide-hint{
+  background:none;
+  border:none;
+  color:var(--white);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:2px;
+  margin-bottom:22px;
+  font-size:13.5px;
+  opacity:.9;
+}
+.chevron{
+  width:26px; height:26px;
+  animation:bounceUp 1.6s infinite;
+}
+
+/* ---------- 10. ILUSTRACIONES (placeholders CSS) ---------- */
+/* --- Koala genérico, construido 100% con CSS como placeholder --- */
+.koala{
+  position:relative;
+  width:120px;
+  height:100px;
+}
+.koala::before{ /* cabeza */
+  content:'';
+  position:absolute;
+  left:50%; top:14px;
+  transform:translateX(-50%);
+  width:78px; height:66px;
+  background:var(--white);
+  border:3px solid #1a1a1a;
+  border-radius:50%;
+}
+.koala::after{ /* nariz */
+  content:'';
+  position:absolute;
+  left:50%; top:44px;
+  transform:translateX(-50%);
+  width:20px; height:16px;
+  background:#1a1a1a;
+  border-radius:6px;
+}
+.koala .ear-l,.koala .ear-r{
+  position:absolute;
+  top:2px;
+  width:34px; height:34px;
+  background:var(--white);
+  border:3px solid #1a1a1a;
+  border-radius:50%;
+}
+.koala--big{ width:150px; height:130px; }
+.koala--big::before{ width:96px; height:80px; top:26px; }
+.koala--big::after{ top:60px; width:24px; height:18px; }
+.koala--small{
+  width:70px; height:60px;
+  position:absolute;
+  top:-30px; left:38px;
+}
+.koala--small::before{ width:52px; height:44px; top:6px; }
+.koala--small::after{ top:26px; width:14px; height:10px; }
+.koala--peek{
+  width:230px; height:150px;
+  margin:0 auto;
+}
+.koala--peek::before{ width:170px; height:140px; top:0; }
+.koala--peek::after{ top:66px; width:30px; height:22px; }
+.koala--avatar{ width:64px; height:54px; }
+.koala--avatar::before{ width:46px; height:40px; top:6px; }
+.koala--avatar::after{ top:24px; width:12px; height:9px; }
+.koala--badge{ width:44px; height:38px; }
+.koala--badge::before{ width:32px; height:28px; top:4px; border-width:2px; }
+.koala--badge::after{ top:16px; width:9px; height:7px; }
+.koala--quality{ width:80px; height:70px; }
+.koala--quality::before{ width:58px; height:50px; top:8px; }
+.koala--quality::after{ top:32px; width:15px; height:11px; }
+.koala--config{ width:150px; height:130px; opacity:0%; }
+.koala--config::before{ width:96px; height:80px; top:26px; }
+.koala--config::after{ top:60px; width:24px; height:18px; }
+
+/* --- otras mascotas: placeholders simples con misma técnica --- */
+.bunny{ position:relative; width:100px; height:90px; }
+.bunny::before{ content:''; position:absolute; left:50%; top:20px; transform:translateX(-50%);
+  width:60px; height:52px; background:#f6eee200; border:3px solid #1a1a1a00; border-radius:50%; }
+.bunny::after{ content:''; position:absolute; left:50%; top:24px; width:34px; height:34px;
+  background:#e8b7a000; border-radius:50%; transform:translateX(-50%) translateY(30px); opacity:.7; }
+.bunny .ear{ position:absolute; top:-26px; width:16px; height:40px; background:#F6EEE2; border:3px solid #1a1a1a; border-radius:40% 40% 40% 40%/60% 60% 20% 20%; }
+.bunny--profile{ width:120px; height:100px; }
+.bunny--info{ width:70px; height:60px; }
+.bunny--avatar{ width:56px; height:48px; }
+
+.panda{ position:relative; width:56px; height:48px; }
+.panda::before{ content:''; position:absolute; left:50%; top:6px; transform:translateX(-50%);
+  width:42px; height:36px; background:#f2f2f2; border:3px solid #1a1a1a; border-radius:50%; }
+.panda--avatar{ width:56px; height:48px; }
+
+.cat{ position:relative; width:56px; height:48px; }
+.cat::before{ content:''; position:absolute; left:50%; top:6px; transform:translateX(-50%);
+  width:42px; height:36px; background:#F0A860; border:3px solid #1a1a1a; border-radius:50%; }
+.cat--avatar{ width:56px; height:48px; }
+
+.fox{ position:relative; width:56px; height:48px; }
+.fox::before{ content:''; position:absolute; left:50%; top:6px; transform:translateX(-50%);
+  width:42px; height:36px; background:#E06A2C; border:3px solid #1a1a1a; border-radius:50%; }
+.fox--avatar{ width:56px; height:48px; }
+
+.otter{ position:relative; width:56px; height:48px; }
+.otter::before{ content:''; position:absolute; left:50%; top:6px; transform:translateX(-50%);
+  width:42px; height:36px; background:#8A6A52; border:3px solid #1a1a1a; border-radius:50%; }
+.otter--avatar{ width:56px; height:48px; }
+
+.raccoon{ position:relative; width:56px; height:48px; }
+.raccoon::before{ content:''; position:absolute; left:50%; top:6px; transform:translateX(-50%);
+  width:42px; height:36px; background:#B9B9B9; border:3px solid #1a1a1a; border-radius:50%; }
+.raccoon--avatar{ width:56px; height:48px; }
+
+/* ---------- 11. PANTALLA CONFIG ---------- */
+.config-title{ margin-top:10px; margin-bottom:34px; }
+.config-card{
+  width:100%;
+  background:var(--purple-veil);
+  border-radius:22px;
+  padding:6px 22px;
+  margin-top: 50px;
+  margin-bottom:28px;
+}
+.config-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:18px 0;
+  font-size:16px;
+  font-weight:500;
+  color: #fff;
+}
+.config-row input[type="time"]{
+  background:none;
+  border:none;
+  color:var(--white);
+  font-size:22px;
+  font-family:var(--font-title);
+  font-weight:600;
+  text-align:right;
+  filter:invert(1) brightness(1.6);
+  color: #fff;
+}
+.config-divider{ height:1px; background:rgba(255,255,255,.18); }
+.config-illustration{ margin-top:auto; padding-top:30px; opacity:.9; }
+
+/* ---------- 12. MODAL ADVERTENCIA ---------- */
+.modal-overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(20,8,16,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+  padding:26px;
+}
+.modal-overlay.active{ display:flex; animation:fadeIn .2s ease; }
+.modal-card{
+  width:100%;
+  background:var(--white);
+  border-radius:26px;
+  padding:30px 24px;
+  text-align:center;
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+  animation:popIn .22s ease;
+}
+.modal-title{
+  font-family:var(--font-title);
+  font-weight:700;
+  font-size:21px;
+  color:var(--purple);
+  margin-bottom:14px;
+}
+.modal-text{
+  font-size:15px;
+  color:#5b4452;
+  line-height:1.5;
+  margin-bottom:22px;
+}
+.modal-actions{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+}
+.modal-actions .btn--text{ color:var(--rose); opacity:1; }
+.modal-actions .btn--text-strong{ color:var(--teal-dark); font-weight:800; }
+
+/* ---------- 13. PANTALLA MODO SUEÑO ACTIVADO ---------- */
+.active-badge{
+  background:var(--teal);
+  color:var(--white);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.03em;
+  padding:8px 30px;
+  border-radius:20px;
+  margin-bottom:90px;
+}
+.time-card{
+  width:100%;
+  background:var(--teal);
+  border-radius:26px;
+  padding:22px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  margin:22px 0 10px;
+  box-shadow:0 10px 24px rgba(0,0,0,.2);
+}
+.time-card__side{ display:flex; flex-direction:column; align-items:center; flex:1; }
+.time-card__value{ font-family:var(--font-title); font-weight:700; font-size:30px; }
+.time-card__label{ font-size:12.5px; opacity:.9; margin-top:2px; }
+.time-card__divider{ width:2px; height:44px; background:rgba(255,255,255,.5); }
+
+.duo-koala{
+  
+  position:relative;
+  width:100%;
+  height:150px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  margin:14px 0 10px;
+}
+.petal{ position:absolute; color:var(--rose-soft); font-size:14px; opacity:.7; }
+.petal--1{ top:6px; left:26%; }
+.petal--2{ bottom:20px; right:22%; }
+
+.alarm-note{
+  font-size:13.5px;
+  line-height:1.5;
+  opacity:.9;
+  margin-top:150px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.streak-card{
+  width:100%;
+  border-radius:24px;
+  overflow:hidden;
+
+  margin-top: 250px;
+}
+.streak-card__top{
+  background:var(--teal);
+  padding:16px 22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:16px;
+  font-weight:600;
+}
+.streak-value{ font-weight:700; }
+.flame{ font-size:15px; }
+.streak-card__days{
+  background:var(--green);
+  padding:18px 14px 14px;
+  display:flex;
+  justify-content:space-between;
+}
+.day-dot{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+  font-weight:700;
+}
+.day-dot__circle{
+  width:22px; height:22px;
+  border-radius:50%;
+  border:2px solid var(--white);
+  background:transparent;
+}
+.day-dot.is-done .day-dot__circle{ background:var(--white); }
+
+/* ---------- 14. PANTALLA RECOMPENSA ---------- */
+.reward-title{
+  color:var(--green-text);
+  font-size:30px;
+  margin-top:6px;
+  opacity: 0%;
+}
+.reward-sub{
+  color:var(--teal);
+  font-family:var(--font-title);
+  font-weight:600;
+  font-size:23px;
+  margin:14px 0 6px;
+  opacity: 0%;
+}
+.reward-desc{
+  color:var(--teal-dark);
+  font-size:15px;
+  line-height:1.4;
+  margin-bottom:18px;
+  opacity: 0%;
+}
+.reward-koala-wrap{
+  position:relative;
+  width:100%;
+  flex:1;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  min-height:170px;
+  margin-bottom:0;
+  opacity: 0%;
+}
+.reward-stats{
+  position:relative;
+  width:calc(100% + 52px);
+  margin:0 -26px -130px;
+  background:#8d3d78;
+  padding:26px 26px 130px;
+  display:flex;
+  justify-content:space-around;
+}
+.reward-stat{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
+.reward-stat__icon{
+  width:56px; height:56px;
+  border-radius:50%;
+  border:2.5px solid var(--white);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:700;
+  color: #fff;
+}
+.reward-stat__value{ font-family:var(--font-title); font-weight:700; font-size:18px; color: #fff; }
+.reward-stat__label{ font-size:12px; opacity:.85; color: #fff; }
+
+/* ---------- 15. PANTALLA HISTORIAL ---------- */
+.quality-card{
+  width:100%;
+  background:var(--white);
+  color:var(--purple);
+  border-radius:24px;
+  padding:22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:24px;
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+.quality-card__label{
+  display:block;
+  font-family:var(--font-title);
+  font-weight:700;
+  font-size:19px;
+  margin-bottom:6px;
+}
+.quality-card__value{
+  display:block;
+  color:var(--rose);
+  font-weight:600;
+  font-size:16px;
+}
+.section-title{
+  font-family:var(--font-title);
+  font-weight:700;
+  font-size:23px;
+  margin-bottom:6px;
+}
+.section-title--dark{ color:#8d3d78; margin-top:4px; margin-bottom: 10px; text-align: left;}
+.section-title--white{ color:var(--white); margin-top:6px; }
+.section-sub{
+  font-size:14px;
+  opacity:.9;
+  margin-bottom:20px;
+  line-height:1.4;
+}
+.stat-cards{
+  width:100%;
+  display:flex;
+  gap:12px;
+  margin-bottom:26px;
+}
+.stat-card{
+  flex:1;
+  border-radius:18px;
+  padding:16px 10px;
+  text-align:left;
+  color:var(--white);
+  min-height:104px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.stat-card--teal{ background:var(--teal); }
+.stat-card--green{ background:var(--green-dark); }
+.stat-card__label{ font-size:13px; opacity:.9; }
+.stat-card__value{ font-family:var(--font-title); font-weight:700; font-size:34px; }
+.stat-card__value small{ font-size:16px; font-weight:600; }
+
+
+.chart-title{
+  align-self:flex-start;
+  font-size:14px;
+  letter-spacing:.06em;
+  opacity:.85;
+  margin-bottom:0px;
+  margin-top: 400px;
+  color: #fff;
+}
+.chart-wrap{
+  width:100%;
+  background:var(--purple-veil-2);
+  border-radius:18px;
+  padding:10px 6px;
+  margin-bottom: 0px;
+}
+.chart-wrap canvas{ width:100%; height:190px; display:block; }
+
+/* ---------- 16. PANTALLA PERFIL ---------- */
+.profile-head{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:24px;
+  text-align:left;
+  opacity: 0%;
+}
+.avatar-circle{
+  width:78px; height:78px;
+  border-radius:50%;
+  background:var(--teal);
+  border:3px solid var(--white);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  overflow:hidden;
+  opacity: 0%;
+}
+.profile-label{ display:block; font-size:13px; opacity:.85; }
+.profile-name{ font-family:var(--font-title); font-weight:800; font-size:26px; }
+.profile-streak-card{
+  width:100%;
+  background:var(--teal);
+  border-radius:26px;
+  padding:22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  text-align:left;
+  margin-bottom:28px;
+  opacity: 0%;
+}
+.profile-streak-card__label{ display:block; font-weight:700; font-size:15px; margin-bottom:8px; }
+.profile-streak-card__value{ display:block; font-family:var(--font-title); font-weight:700; font-size:26px; }
+.badge-grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:10px;
+  opacity: 0%;
+}
+.badge{
+  background:none;
+  border:none;
+  color:var(--white);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  font-size:10.5px;
+  line-height:1.25;
+}
+.badge__icon{ width:56px; height:56px; }
+.badge--unlocked .badge__icon{
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:3px solid;
+}
+.badge--rose .badge__icon{ border-color:var(--rose); background:rgba(168,85,110,.15); }
+.badge--rose{ color:var(--rose-soft); }
+.badge--teal .badge__icon{ border-color:var(--teal); background:rgba(62,156,140,.15); }
+.badge--teal{ color:var(--teal-light); }
+.badge--locked{ color:rgba(255,255,255,.55); }
+.badge--locked .badge__icon{
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.4);
+  padding:12px;
+}
+
+/* ---------- 17. PANTALLA MASCOTAS ---------- */
+.pet-info-card{
+  width:100%;
+  background:var(--teal);
+  border-radius:24px;
+  padding:20px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  text-align:left;
+  margin-bottom:26px;
+  color: #fff;
+}
+.pet-info-card > div{ display:flex; flex-direction:column; gap:6px; font-size:15px; font-weight:600; }
+.pets-grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
+  margin-bottom:10px;
+  opacity: 0%;
+}
+.pet-avatar{
+  background:var(--white);
+  border:none;
+  border-radius:50%;
+  aspect-ratio:1/1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 8px 16px rgba(0,0,0,.2);
+  transition:transform .15s ease;
+}
+.pet-avatar:active{ transform:scale(.94); }
+
+/* ---------- 18. PANTALLA EN CONSTRUCCIÓN ---------- */
+.screen--soon{ justify-content:center; }
+.soon-center{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:22px;
+  z-index:2;
+  opacity: 0%;
+}
+.duo-koala--soon{ height:auto; margin-bottom:0; }
+
+
+
+.soon-title{
+  font-family:var(--font-title);
+  font-weight:800;
+  font-size:32px;
+  line-height:1.15;
+  color:var(--white);
+}
+.soon-title__ghost{ color:rgba(255,255,255,.35); }
+.soon-sub{
+  font-size:15px;
+  opacity:.85;
+  line-height:1.5;
+}
+
+/* ---------- 19. ANIMACIONES ---------- */
+@keyframes fadeIn{
+  from{ opacity:0; transform:translateY(6px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+@keyframes popIn{
+  from{ opacity:0; transform:scale(.92); }
+  to{ opacity:1; transform:scale(1); }
+}
+@keyframes bounceUp{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-6px); }
+}
+
+/* Slide-to-activate: retroalimentación al arrastrar */
+.slide-hint.dragging{ opacity:.6; }
+.slide-hint.activated .chevron{ animation:none; transform:translateY(-4px); }
+
+/* Respeto por preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce){
+  .chevron{ animation:none; }
+  .screen.active{ animation:none; }
+}
+
+
+
